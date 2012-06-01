@@ -1,20 +1,3 @@
-/***************************************************************************
- * 
- * Copyright (c) 2012 Baidu.com, Inc. All Rights Reserved
- * $Id$ 
- * 
- **************************************************************************/
- 
- 
- 
-/**
- * blacklist.js ~ 2012/06/01 21:01:20
- * @author leeight(liyubei@baidu.com)
- * @version $Revision$ 
- * @description 
- *  
- **/
-
 var window = this;
 
 var _ = _ || {};

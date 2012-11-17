@@ -113,7 +113,7 @@ ad.Launch = function(main) {
       }
     } else {
         var iAmFe = goog.isDebugMode(),
-            nocc = /nc=1/.test(document.location.search);
+            nocc = /nc=1/.test(document.location.search) || (document.location.host.indexOf('github.com') > -1);
         for (var i = 0; i < goog.asyncStyles.length; i++) {
           var styleElt = doc.createElement('LINK'),
               url = goog.asyncStyles[i];

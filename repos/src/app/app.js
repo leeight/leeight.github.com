@@ -15,13 +15,13 @@
  *
  **/
 
-goog.require('jn.net.TemplateWorker');
 goog.require('base.ParallelWorkerManager');
 goog.require('er.template');
+goog.require('jn.flags');
+goog.require('jn.net.TemplateWorker');
+goog.require('jn.util');
 goog.require('ui.Page');
 goog.require('ui.util');
-goog.require('jn.util');
-goog.require('jn.flags');
 
 goog.provide('app.Init');
 goog.provide('app.InitFromElement');
@@ -55,15 +55,15 @@ app.Launch = function(main) {
       return tag.src;
     }
 
-    function combinedUris (uris) {
+    function combinedUris(uris) {
       // @see http://support.microsoft.com/kb/208427
       // if the request url length is more than 2083, the internet explorer
       // will drop that request, never make it happen. :-(
       // in order to address this issue, we have to split the uris into chunks.
-      var uri = '', 
+      var uri = '',
           uri_chunks = [];
 
-      for(var i = 0; i < uris.length; i ++) {
+      for (var i = 0; i < uris.length; i++) {
         // I dont know why it works, but it does work.
 
         // IE6下面，当前页面的地址是
@@ -81,12 +81,12 @@ app.Launch = function(main) {
         uris[i] = uris[i].replace(/http:\/\/([^\/]+)\//g, '/');
       }
 
-      for(var i = 0; i < uris.length; i ++) {
-        if (encodeURIComponent(uri + uris[i] + ",").length > 800) {
+      for (var i = 0; i < uris.length; i++) {
+        if (encodeURIComponent(uri + uris[i] + ',').length > 800) {
           uri_chunks.push(uri);
           uri = uris[i];
         } else {
-          uri += ("," + uris[i]);
+          uri += (',' + uris[i]);
         }
       }
       if (uri) {
@@ -108,41 +108,41 @@ app.Launch = function(main) {
       // XXX Need run Fserver
       var request_id = getRequestId();
       var chunks = combinedUris(goog.asyncStyles);
-      for (var i = 0; i < chunks.length; i ++) {
+      for (var i = 0; i < chunks.length; i++) {
         var styleElt = doc.createElement('LINK');
         styleElt.setAttribute('type', 'text/css');
         styleElt.setAttribute('rel', 'stylesheet');
-        styleElt.setAttribute('href', '/combine/all.css?uris=' + 
+        styleElt.setAttribute('href', '/combine/all.css?uris=' +
           encodeURIComponent(chunks[i]) +
-          "&.timestamp=" + Math.random() +
-          "&request_id=" + request_id +
-          "&index=" + i +
-          "&count=" + chunks.length);
+          '&.timestamp=' + Math.random() +
+          '&request_id=' + request_id +
+          '&index=' + i +
+          '&count=' + chunks.length);
         head.appendChild(styleElt);
       }
     } else {
         var iAmFe = goog.isDebugMode(),
-            nocc = /nc=1/.test(document.location.search) || (document.location.host.indexOf("github.com") > -1);
-        for(var i = 0; i < goog.asyncStyles.length; i++){
+            nocc = /nc=1/.test(document.location.search) || (document.location.host.indexOf('github.com') > -1);
+        for (var i = 0; i < goog.asyncStyles.length; i++) {
           var styleElt = doc.createElement('LINK'),
               url = goog.asyncStyles[i];
           styleElt.setAttribute('type', 'text/css');
           styleElt.setAttribute('rel', 'stylesheet');
-          if (url.indexOf(".less") > -1) {
+          if (url.indexOf('.less') > -1) {
             // nc=1参数默认是没有的，所以nocc默认是false，跟原来的逻辑是一致的.
             if (iAmFe && !nocc) {
               // I'm the FE, and maybe i'm using the Fserver
               url = getAbsoluteUrl(url);
               url = url.replace(/http:\/\/([^\/]+)\//g, '/');
-              styleElt.setAttribute('href', "/combine/all.css?uris=" + 
-                encodeURIComponent(url) + "&.timestamp=" + Math.random());
+              styleElt.setAttribute('href', '/combine/all.css?uris=' +
+                encodeURIComponent(url) + '&.timestamp=' + Math.random());
             } else {
               // I'm the RD
-              url = url.replace(".less", ".compiled.css");
-              styleElt.setAttribute('href', url + "?.timestamp=" + Math.random());
+              url = url.replace('.less', '.compiled.css');
+              styleElt.setAttribute('href', url + '?.timestamp=' + Math.random());
             }
           } else {
-            styleElt.setAttribute('href', url + "?.timestamp=" + Math.random());
+            styleElt.setAttribute('href', url + '?.timestamp=' + Math.random());
           }
           head.appendChild(styleElt);
         }
@@ -151,15 +151,15 @@ app.Launch = function(main) {
     if (goog.asyncResource.length > 0) {
       if (/ct=1|combine_tpl=1/.test(document.location.search)) {
         var chunks = combinedUris(goog.asyncResource);
-        for(var i = 0; i < chunks.length; i ++) {
-          pwm.addWorker(new jn.net.TemplateWorker(["/combine/tpl.html?uris=" + encodeURIComponent(chunks[i])]));
+        for (var i = 0; i < chunks.length; i++) {
+          pwm.addWorker(new jn.net.TemplateWorker(['/combine/tpl.html?uris=' + encodeURIComponent(chunks[i])]));
         }
       } else {
         pwm.addWorker(new jn.net.TemplateWorker(goog.asyncResource));
       }
     }
   } else {
-    pwm.addWorker(new jn.net.TemplateWorker([app.asyncResource]))
+    pwm.addWorker(new jn.net.TemplateWorker([app.asyncResource]));
   }
 
   baidu.addClass(document.body, jn.util.getUserAgentClass());
@@ -209,17 +209,17 @@ if (FLAGS_enable_landmark) {
   // So we can add new features safely in the future.
   app.ThisIsATest = function() {
     alert('ThisIsATest');
-  }
+  };
 }
 
 if (!COMPILED) {
-  if (document.location.host == "svn.baidu.com" ||
-      document.location.host == "img.fe.baidu.com") {
+  if (document.location.host == 'svn.baidu.com' ||
+      document.location.host == 'img.fe.baidu.com') {
     // 通过svn浏览页面，重写RES函数
     window['RES'] = function(resource) {
       // 因为我们有约定，resource肯定是绝对路径
       return goog.basePath + '..' + resource;
-    }
+    };
   }
 }
 

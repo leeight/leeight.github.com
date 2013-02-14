@@ -16,7 +16,17 @@
  **/
 function Node(name) {
   this.name = name;
+  this.parent = null;
   this.children = [];   // Array.<Node>
+}
+
+/**
+ * @enum {number}
+ */
+Node.STATUS = {
+  NOT_VISITED: 1,
+  VISITING: 2,
+  VISITED: 3
 }
 
 Node.prototype.getName = function() {
@@ -24,7 +34,12 @@ Node.prototype.getName = function() {
 }
 
 Node.prototype.addChild = function(child) {
+  child.parent = this;
   this.children.push(child);
+}
+
+Node.prototype.getParent = function() {
+  return this.parent;
 }
 
 Node.prototype.toString = function() {

@@ -67,6 +67,17 @@ exports.testInsert = function(test) {
   test.done();
 }
 
+exports.testBuild = function(test) {
+  var heap = new Heap([1,2,3,4,5,1,1,1,2,4]);
+  test.equal(heap.toString(), "5,4,3,2,4,1,1,1,1,2");
+
+  test.equal(heap.peek(), 5);
+  test.equal(heap.pop(), 5);
+  test.equal(heap.toString(), "4,4,3,2,2,1,1,1,1");
+
+  test.done();
+}
+
 exports.testPop = function(test) {
   var heap = new Heap();
 

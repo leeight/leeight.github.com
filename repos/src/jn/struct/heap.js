@@ -18,19 +18,22 @@
 
 /**
  * @constructor
+ * @param {Array.<*>} opt_data
  * @param {Function=} opt_comparator
  */
-function Heap(opt_comparator) {
+function Heap(opt_data, opt_comparator) {
   /**
    * @type {Array.<*>}
    */
-  this._collections = [];
+  this._collections = opt_data || [];
 
   this._comparator = opt_comparator || function(a, b) {
     if (a > b) return 1;
     if (a == b) return 0;
     if (a < b) return -1;
   };
+
+  this._build();
 }
 
 Heap.prototype.peek = function() {
@@ -53,6 +56,13 @@ Heap.prototype.pop = function() {
 Heap.prototype.insert = function(item) {
   this._collections.push(item);
   this._heapifyUp(this._collections.length - 1);
+}
+
+Heap.prototype._build = function() {
+  var size = this._collections.length;
+  for (var i = Math.floor(size / 2); i >= 0; i --) {
+    this._heapifyDown(i);
+  }
 }
 
 /**
@@ -107,7 +117,7 @@ Heap.prototype._heapifyUp = function(index) {
   // n -> 2n + 1
   // n -> 2n + 2
   while (true) {
-    var parentIndex = ~~((index - 1) / 2);
+    var parentIndex = Math.floor((index - 1) / 2);
     var result = this._comparator(this._collections[index],
       this._collections[parentIndex]);
     if (result === 1) {

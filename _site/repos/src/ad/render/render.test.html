@@ -1,0 +1,185 @@
+<!doctype html>
+<!--
+/***************************************************************************
+ *
+ * Copyright (c) 2012 Baidu.com, Inc. All Rights Reserved
+ * $Id: render.test.html 9567 2012-06-06 06:33:00Z FANXUELIANG $
+ *
+ **************************************************************************/
+
+
+
+/**
+ * src/ad/json/render.test.html ~ 2012/05/10 10:49:04
+ * @author liyubei@baidu.com (liyubei)
+ * @version $Revision: 9567 $ 
+ * @description
+ *
+ **/
+-->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>[TEST]ad.render.Render</title>
+    <script type="text/javascript" src="../../../assets/js/tangram-base-1.3.7.1.js"></script>
+    <script type="text/javascript" src="../../../assets/js/mustache.js"></script>
+    <script type="text/javascript" src="../../base.js"></script>
+    <script type="text/javascript">
+        goog.require('ad.Debug');
+        goog.require('ad.render.DefaultRender');
+        goog.require('ad.render.RecursiveRender');
+        goog.require('ad.render.AbsoluteRender');
+        goog.require('third_party.qunit.Qunit');
+    </script>
+</head>
+<body>
+  <div id="qunit"></div>
+</body>
+<script type="text/javascript">
+function bootstrap() {
+  test('ad.render.AbsoluteRender', function(){
+    var layouts = [
+      {top:10,left:10,width:100,height:100},
+      {top:20,left:20,width:200,height:200}
+    ];
+
+    var widget = {
+      'getId' : function() { return 'wid'; },
+      'getMainHtml' : function(){ return '<b>hello world</b>.'}
+    };
+    var render = new ad.render.AbsoluteRender(layouts);
+    var widgets = [[widget, widget]];
+    var html = render.process(widgets);
+
+    equal(html, "<div class=\"canvas\"><div class=\"layout\">\n" +
+      "<div id=\"wid\" class=\"ad-layout-item ad-layout-item-1\" style=\"position:absolute;top:10px;left:10px;width:100px;height:100px;overflow:hidden;\"><b>hello world</b>.</div>\n" +
+      "<div id=\"wid\" class=\"ad-layout-item ad-layout-item-2\" style=\"position:absolute;top:20px;left:20px;width:200px;height:200px;overflow:hidden;\"><b>hello world</b>.</div>\n" +
+      "</div></div>");
+  });
+
+  test('ad.render.RecursiveRender', function(){
+    var render = new ad.render.RecursiveRender();
+
+    var layout = render.genLayout([]);
+    equal(layout, [].join('\n'), "默认布局");
+
+    var layout = render.genLayout([
+      []
+    ]);
+    equal(layout, [
+             '<div class="ad-layout-block ad-layout-block-0" id="{{block-0-id}}">',
+             '</div>'].join('\n'), "1行0列");
+
+    var layout = render.genLayout([
+      [null, null, null]
+    ]);
+    equal(layout, [
+             '<div class="ad-layout-block ad-layout-block-0" id="{{block-0-id}}">',
+               '<div class="ad-layout-block ad-layout-block-0-0" id="{{block-0-0-id}}">','{{{block_0_0}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-0-1" id="{{block-0-1-id}}">','{{{block_0_1}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-0-2" id="{{block-0-2-id}}">','{{{block_0_2}}}','</div>',
+             '</div>'].join('\n'), "1行3列");
+
+    var layout = render.genLayout([
+      [null, null, null],
+      [null, null]
+    ]);
+    equal(layout, [
+             '<div class="ad-layout-block ad-layout-block-0" id="{{block-0-id}}">',
+               '<div class="ad-layout-block ad-layout-block-0-0" id="{{block-0-0-id}}">','{{{block_0_0}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-0-1" id="{{block-0-1-id}}">','{{{block_0_1}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-0-2" id="{{block-0-2-id}}">','{{{block_0_2}}}','</div>',
+             '</div>',
+             '<div class="ad-layout-block ad-layout-block-1" id="{{block-1-id}}">',
+               '<div class="ad-layout-block ad-layout-block-1-0" id="{{block-1-0-id}}">','{{{block_1_0}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-1-1" id="{{block-1-1-id}}">','{{{block_1_1}}}','</div>',
+             '</div>'].join('\n'), "2行3列");
+
+    var layout = render.genLayout([
+      [null, [null, null], null, [null, null], null],
+      [null, null]
+    ]);
+    equal(layout, [
+             '<div class="ad-layout-block ad-layout-block-0" id="{{block-0-id}}">',
+               '<div class="ad-layout-block ad-layout-block-0-0" id="{{block-0-0-id}}">','{{{block_0_0}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-0-1" id="{{block-0-1-id}}">',
+                 '<div class="ad-layout-block ad-layout-block-0-1-0" id="{{block-0-1-0-id}}">','{{{block_0_1_0}}}','</div>',
+                 '<div class="ad-layout-block ad-layout-block-0-1-1" id="{{block-0-1-1-id}}">','{{{block_0_1_1}}}','</div>',
+               '</div>',
+               '<div class="ad-layout-block ad-layout-block-0-2" id="{{block-0-2-id}}">','{{{block_0_2}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-0-3" id="{{block-0-3-id}}">',
+                 '<div class="ad-layout-block ad-layout-block-0-3-0" id="{{block-0-3-0-id}}">','{{{block_0_3_0}}}','</div>',
+                 '<div class="ad-layout-block ad-layout-block-0-3-1" id="{{block-0-3-1-id}}">','{{{block_0_3_1}}}','</div>',
+               '</div>',
+               '<div class="ad-layout-block ad-layout-block-0-4" id="{{block-0-4-id}}">','{{{block_0_4}}}','</div>',
+             '</div>',
+             '<div class="ad-layout-block ad-layout-block-1" id="{{block-1-id}}">',
+               '<div class="ad-layout-block ad-layout-block-1-0" id="{{block-1-0-id}}">','{{{block_1_0}}}','</div>',
+               '<div class="ad-layout-block ad-layout-block-1-1" id="{{block-1-1-id}}">','{{{block_1_1}}}','</div>',
+             '</div>'].join('\n'), "2行5列");
+
+  });
+
+  test('ad.render.DefaultRender', function(){
+    var render = new ad.render.DefaultRender();
+
+    var layout = render.genLayout([]);
+    equal(layout, ['<div class="layout">','</div>'].join('\n'), "默认布局");
+
+    var layout = render.genLayout([
+      []
+    ]);
+    equal(layout, ['<div class="layout">',
+           '<div class="ad-layout-row ad-layout-row-0">',
+           '</div>',
+           '</div>'].join('\n'), "1行0列");
+
+    var layout = render.genLayout([
+      [null, null, null]
+    ]);
+    equal(layout, ['<div class="layout">',
+             '<div class="ad-layout-row ad-layout-row-0">',
+               '<div class="ad-layout-col ad-layout-col-0" id="{{r0c0-id}}">{{{r0c0}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-1" id="{{r0c1-id}}">{{{r0c1}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-2" id="{{r0c2-id}}">{{{r0c2}}}</div>',
+             '</div>',
+           '</div>'].join('\n'), "1行3列");
+
+    var layout = render.genLayout([
+      [null, null, null],
+      [null, null]
+    ]);
+    equal(layout, ['<div class="layout">',
+             '<div class="ad-layout-row ad-layout-row-0">',
+               '<div class="ad-layout-col ad-layout-col-0" id="{{r0c0-id}}">{{{r0c0}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-1" id="{{r0c1-id}}">{{{r0c1}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-2" id="{{r0c2-id}}">{{{r0c2}}}</div>',
+             '</div>',
+             '<div class="ad-layout-row ad-layout-row-1">',
+               '<div class="ad-layout-col ad-layout-col-0" id="{{r1c0-id}}">{{{r1c0}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-1" id="{{r1c1-id}}">{{{r1c1}}}</div>',
+             '</div>',
+           '</div>'].join('\n'),  "2行3列");
+
+    var layout = render.genLayout([
+      [null, null, null, [null]],
+      [null, null]
+    ]);
+    equal(layout, ['<div class="layout">',
+             '<div class="ad-layout-row ad-layout-row-0">',
+               '<div class="ad-layout-col ad-layout-col-0" id="{{r0c0-id}}">{{{r0c0}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-1" id="{{r0c1-id}}">{{{r0c1}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-2" id="{{r0c2-id}}">{{{r0c2}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-3" id="{{r0c3-id}}">{{{r0c3}}}</div>',
+             '</div>',
+             '<div class="ad-layout-row ad-layout-row-1">',
+               '<div class="ad-layout-col ad-layout-col-0" id="{{r1c0-id}}">{{{r1c0}}}</div>',
+               '<div class="ad-layout-col ad-layout-col-1" id="{{r1c1-id}}">{{{r1c1}}}</div>',
+             '</div>',
+           '</div>'].join('\n'), "2行4列");
+  });
+}
+
+ad.Debug(bootstrap);
+</script>
+</html>

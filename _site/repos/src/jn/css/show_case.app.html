@@ -1,0 +1,45 @@
+<!doctype html>
+<!--
+/***************************************************************************
+ *
+ * Copyright (c) 2012 Baidu.com, Inc. All Rights Reserved
+ * $Id$
+ *
+ **************************************************************************/
+
+
+
+/**
+ * src/jn/css/show_case.app.html ~ 2012/11/17 16:41:58
+ * @author leeight@gmail.com (leeight)
+ * @version $Revision$ 
+ * @description
+ *
+ **/
+-->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>[AD]jn.css.ShowCase</title>
+    <script type="text/javascript" src="../../../assets/js/tangram-base-1.3.7.1.js"></script>
+    <script type="text/javascript" src="../../../assets/js/mustache.js"></script>
+    <script type="text/javascript" src="../../base.js"></script>
+    <script type="text/javascript" src="show_case.config.js"></script>
+    <script type="text/javascript">
+        goog.require('ad.Debug');
+        goog.require('ad.Material');
+        goog.require('jn.css.ShowCase');
+    </script>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+ad.Debug(function() {
+    var material = new ad.Material('ec-ma-8964');
+    material.setWidgets(
+        [new jn.css.ShowCase(WIDGET_CONFIG)]
+    );
+    material.show();
+});
+</script>
+</html>

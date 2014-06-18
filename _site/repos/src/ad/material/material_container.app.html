@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+/***************************************************************************
+ *
+ * Copyright (c) 2012 Baidu.com, Inc. All Rights Reserved
+ * $Id: material_container.app.html 11047 2012-08-09 02:54:18Z liyubei $
+ *
+ **************************************************************************/
+
+
+
+/**
+ * src/ad/widget/material_container.app.html ~ 2012/08/08 21:41:35
+ * @author leeight@gmail.com (leeight)
+ * @version $Revision: 11047 $ 
+ * @description
+ *
+ **/
+-->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>[AD]ad.widget.MaterialContainer</title>
+    <script type="text/javascript" src="../../../assets/js/tangram-base-1.3.7.1.js"></script>
+    <script type="text/javascript" src="../../../assets/js/mustache.js"></script>
+    <script type="text/javascript" src="../../base.js"></script>
+    <script type="text/javascript">
+        goog.require('ad.Debug');
+        goog.require('ad.widget.Title');
+        goog.require('ad.widget.TabContainer');
+        goog.require('ad.widget.MaterialContainer');
+    </script>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+ad.Debug(function() {
+    var index = 0,
+        TAB_CONFIG = {
+            'interval_time' : 5000,
+            'hover_time' : 200,
+            'default_index' : 0, //默认载入的tab，从0开始
+            'options': [{
+                'tab_title': '立即试用'
+            },{
+                'tab_title': '独家优惠'
+            },{
+                'tab_title': '名人推荐'
+            },{
+                'tab_title': '十年美肌力'
+            },{
+                'tab_title': '美白双势力'
+            }]
+        };
+
+    function getConfig() {
+        index++;
+        return {
+            'activetip': '品牌活动区' + index + '：',
+            'activetitle': '人人爱果粒，全国对对碰' + index + '！',
+            'activeurl': 'http://www.baidu' + index + '.com'
+        };
+    }
+
+    var tab = new ad.widget.TabContainer(TAB_CONFIG),
+        material = new ad.widget.MaterialContainer('ec-ma-amazon-1223');
+    tab.setWidgets([
+        new ad.widget.Title(getConfig()),
+        new ad.widget.Title(getConfig()),
+        new ad.widget.Title(getConfig()),
+        new ad.widget.Title(getConfig()),
+        new ad.widget.Title(getConfig())
+    ]);
+    material.setWidgets([tab]);
+    material.show();
+});
+</script>
+</html>

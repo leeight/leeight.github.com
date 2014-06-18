@@ -1,0 +1,105 @@
+/***************************************************************************
+ * 
+ * Copyright (c) 2012 Baidu.com, Inc. All Rights Reserved
+ * $Id: tab_container.less 10019 2012-07-02 10:17:29Z fanxueliang $ 
+ * 
+ **************************************************************************/
+/**
+ * src/ad/widget/tab_container.less ~ 2012/07/02 17:44:45
+ * @author fanxueliang(fanxueliang@baidu.com)
+ * @version $Revision: 10019 $ 
+ * @description 
+ *  
+ **/
+.ad-widget-tab-container {
+  font: 13px/1.2 arial, sans-serif;
+}
+.ad-widget-tab-container .tab-head {
+  background: url("http://eiv.baidu.com/mapm2/dell/120711_pl_01/line.png") repeat-x scroll center bottom transparent;
+  height: 24px;
+  list-style: none outside none;
+  margin: 10px 0 5px;
+  padding: 0 8px 0 0;
+}
+.ad-widget-tab-container .tab-head li {
+  display: inline;
+  float: left;
+  margin-bottom: -1px;
+  margin-left: 8px;
+  position: relative;
+}
+.ad-widget-tab-container .tab-head li a,
+.ad-widget-tab-container .tab-head li a:visited {
+  background-color: #FFF;
+  border: 1px solid #BECCF1;
+  display: block;
+  font-size: 12px;
+  line-height: 14px;
+  outline: 0 none;
+  padding: 4px 0;
+  text-align: center;
+  text-decoration: none;
+}
+.ad-widget-tab-container .tab-head li a.current {
+  background-color: #EFF4FC;
+  border-bottom: 1px solid #EFF4FC;
+}
+.ad-widget-tab-container .tab-body {
+  margin: 0px;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon {
+  display: none;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon table td {
+  line-height: 18px;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon table td a {
+  color: #000000;
+  font-family: "宋体";
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: none;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon table td a img {
+  border: 0px;
+  display: block;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .brand-pic {
+  height: 100px;
+  width: 195px;
+  padding-left: 8px;
+  word-wrap: break-word;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .brand-pic a {
+  display: block;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .brand-pic img {
+  height: 100px;
+  width: 180px;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .brand-intro {
+  padding-left: 12px;
+  padding-right: 0px;
+  word-wrap: break-word;
+  height: 102px;
+  overflow: hidden;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .brand-intro h1 {
+  margin: 0px;
+  padding: 0px;
+  *margin-bottom: 4px;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .brand-intro h3 {
+  margin: 0px;
+  padding: 0px;
+  font-weight: normal;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .td-border {
+  border-right: 1px solid #E1E1E1;
+  width: 185px;
+}
+.ad-widget-tab-container .tab-body .tabcon .tabcon .td-border .brand-intro {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+/* vim: set ts=4 sw=4 sts=4 tw=100 : */

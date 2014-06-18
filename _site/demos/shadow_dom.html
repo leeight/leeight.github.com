@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<button>Hello, world!</button>	
+<script>
+var host = document.querySelector('button');
+var root = host.webkitCreateShadowRoot();
+root.textContent = 'こんにちは、影の世界!';
+</script>
+
+
+
+<div id="nameTag">
+  <div class="first">Bob</div>
+  <div>B. Love</div>
+  <div class="email">bob@</div>
+</div>
+
+<template id="nameTagTemplate">
+<style>
+.outer {
+	border: 2px solid brown;
+	border-radius: 1em;
+	background: red;
+	font-size: 20pt;
+	width: 12em;
+	height: 7em;
+	text-align: center;
+}
+.boilerplate {
+	color: white;
+	font-family: sans-serif;
+	padding: 0.5em;
+}
+.name {
+	color: black;
+	background: white;
+	font-family: "Marker Felt", cursive;
+	font-size: 45pt;
+	padding-top: 0.2em;
+}
+</style>
+<!-- 
+<div class="outer">
+	<div class="boilerplate">Hi! My name is</div>
+	<div class="name"><content></content></div>
+</div>	
+-->
+<div style="background:purple;padding:1em">
+	<div style="color:red">
+		<content select=".first"></content>
+	</div>
+	<div style="color:yellow">
+		<content select="div"></content>
+	</div>
+	<div style="color:blue">
+		<content select=".email"></content>
+	</div>
+</div>
+</template>
+
+<script>
+var shadow = document.querySelector("#nameTag").webkitCreateShadowRoot();
+var template = document.querySelector("#nameTagTemplate");
+shadow.appendChild(template.content);
+template.remove();
+</script>
+
+</body>
+</html>

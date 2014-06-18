@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>How to start JIT-ing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Oswald:400,700|Inconsolata:400,700" rel="stylesheet" type="text/css">
+    <link href="/public/css/github2.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/public/css/pygments.css" type="text/css" />
+</head>
+<body>
+<!--[if lt IE 8]>
+<p>您使用的浏览器版本<strong>过老</strong>，请<a href="http://browsehappy.com/">使用最新的浏览器</a>来提升浏览体验。</p>
+<![endif]-->
+
+
+
+<article>
+    <div class="post-title">
+        <h1>How to start JIT-ing</h1>
+        <time>10 Jun 2014</time> <small>by <a href="/">leeight</a> </small>
+    </div>
+
+    <div class="post-body">
+    <h3>前言</h3>
+
+<p>大部分工程师都听说过 JIT 编译器这个神奇的东东，可以大大提高解释型语言的执行效率，某些场景下的执行速度甚至可以跟机器码想媲美。但是并没有很多的工程师理解 JIT 编译器背后的工作原理，能够开发自己所需要 JIT编译器 的工程师就少之又少了。</p>
+
+<p>我理解至少去了解一下编译器内部的工作原理对于理解代码的执行过程是很有帮助的。因此在下面的章节中就会介绍一下 JIT编译器 的主要几个知识点，最后希望能借助这些知识实现一个我们自己的 JIT编译器。</p>
+
+<h3>从哪里开始呢</h3>
+
+<p>对编译器有一定了解的工程师们都知道，编译器实际上就是把一种格式的输入（通常是源代码）转化成另外一种格式的输出（通常是字节码，机器码等等），JIT编译器也不例外。JIT编译器比较特殊的地方在于它并不是提前编译好源代码的，而是需要的时候即时编译，这正是它名字的来历（Just-In-Time）。</p>
+
+<p>在开发我们自己的 JIT编译器之前，我们首先需要确定这个编译器的输入是什么。在参考了<a href="http://adambard.com/blog/top-github-languages-for-2013-so-far/">2013年度Github上最流行的编程语言</a>排行榜之后，发现JavaScript名列首位，所以我们就选择 JavaScript 作为编译器的输入。
+AST</p>
+
+<p>我们的 JIT编译器输入是 JavaScript源代码，输出是可以立即在 X64平台上的执行机器码。但是对于正常的人类来说，看到文本形式的机器码可能更舒心一些，这也正是为什么很多开发编译器的工程师们通常会选择多个中间语言（Intermediate Representations），最终才生成所需的机器码。</p>
+
+<p>因为我们要开发的只是一个简单的 JIT编译器，因此一个中间语言就足够了，所以我们选择了抽象语法树（AST）来协助我们完成后续的工作。</p>
+
+<p>时至今日，生成 JavaScript的抽象语法树已经是很简单的事情了，有很多开源工具可供我们选择，例如：esprima，uglify-js等等。这里我选择了esprima，因为它的输出格式定义的很清晰，容易进行后续的处理。
+例如对于这句代码：obj.method(42) 调用esprima的API之后，就会输出如下的抽象语法树（AST）。</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;Program&#39;</span><span class="p">,</span>
+  <span class="nx">body</span><span class="o">:</span>
+   <span class="p">[</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;ExpressionStatement&#39;</span><span class="p">,</span>
+       <span class="nx">expression</span><span class="o">:</span>
+        <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;CallExpression&#39;</span><span class="p">,</span>
+          <span class="nx">callee</span><span class="o">:</span>
+           <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;MemberExpression&#39;</span><span class="p">,</span>
+             <span class="nx">computed</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+             <span class="nx">object</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;Identifier&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;obj&#39;</span> <span class="p">},</span>
+             <span class="nx">property</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;Identifier&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;method&#39;</span> <span class="p">}</span> <span class="p">},</span>
+          <span class="nx">arguments</span><span class="o">:</span> <span class="p">[</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;Literal&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">42</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span>
+</code></pre></div>
+<h3>Machine Code</h3>
+
+<p>如果对熟悉汇编语言有一定了解的话，可以跳过这部分的内容。如果不是很熟悉的话，强烈建议你继续读下去。
+CPU只能理解和执行二进制的代码，通过读取一条指令，运行一条指令的方式来执行代码。但是对于人类来说，汇编语言算是最接近这些二进制代码的文本表示形式。对于人类来说，看到下面的代码应该很容易从逻辑上理解：一行就是一条CPU指令。</p>
+<div class="highlight"><pre><code class="language-asm" data-lang="asm"><span class="nf">mov</span> <span class="no">rax</span><span class="p">,</span> <span class="mi">1</span>    <span class="err">;</span> <span class="err">把</span> <span class="mi">1</span> <span class="err">放入寄存器`</span><span class="no">rax</span><span class="err">`</span>
+<span class="nf">mov</span> <span class="no">rbx</span><span class="p">,</span> <span class="mi">2</span>    <span class="err">;</span> <span class="err">把</span> <span class="mi">2</span> <span class="err">放入寄存器`</span><span class="no">rbx</span><span class="err">`</span>
+<span class="nf">add</span> <span class="no">rax</span><span class="p">,</span> <span class="no">rbx</span>  <span class="err">;</span> <span class="err">计算寄存器</span> <span class="err">`</span><span class="no">rax</span><span class="err">`</span> <span class="err">和</span> <span class="err">`</span><span class="no">rbx</span><span class="err">`</span> <span class="err">的值，然后把结果放回到寄存器</span> <span class="err">`</span><span class="no">rax</span><span class="err">`</span>
+</code></pre></div>
+<p>上面这段代码的输出是3（也就是寄存器 rax 里面的值）。另外你可能也看到了，上面这段代码执行的时候就是把一些值放到合适的寄存器中去，然后让 CPU计算结果，把结果再放到合适的寄存器里面。</p>
+
+<p>通常情况下 CPU 有足够多的寄存器来存储中间结果，但是有些情况下我们还是会需要从内存中读取或者写入一些数据。</p>
+<div class="highlight"><pre><code class="language-asm" data-lang="asm"><span class="nf">mov</span> <span class="no">rax</span><span class="p">,</span> <span class="mi">1</span>
+<span class="nf">mov</span> <span class="err">[</span><span class="no">rbp-8</span><span class="err">]</span><span class="p">,</span> <span class="no">rbx</span>  <span class="err">;</span> <span class="no">Save</span> <span class="no">rbx</span> <span class="no">register</span> <span class="no">into</span> <span class="no">a</span> <span class="no">stack</span> <span class="no">slot</span>
+<span class="nf">mov</span> <span class="no">rbx</span><span class="p">,</span> <span class="mi">2</span>
+<span class="nf">add</span> <span class="no">rax</span><span class="p">,</span> <span class="no">rbx</span>
+<span class="nf">mov</span> <span class="no">rbx</span><span class="p">,</span> <span class="err">[</span><span class="no">rbp-8</span><span class="err">]</span>  <span class="err">;</span> <span class="no">Restore</span> <span class="no">rbx</span> <span class="no">register</span> <span class="no">from</span> <span class="no">a</span> <span class="no">stack</span> <span class="no">slot</span>
+</code></pre></div>
+<p>寄存器通常以 rax, rbx, rcx 等符号来表示，内存地址通常以 [...] 符号来表示。例如：[rbx-8] 的意思就是获取寄存器 rbx 中的值，减去8，然后把结果当做内存地址，从中获取所需要的数据。</p>
+
+<p>你可以看到这里我们使用了 rbx 寄存器，一般来说 rbx 寄存器中存储的是在栈内分配的变量的内存起始地址；8是 rbx 寄存器的容量，因为栈是向上增长的，所以我们需要减去8从而得到一个可用的内存地址。</p>
+
+<p>实际上对于如此底层的代码在不同的平台上还是会有一些细微的差别，但是这里我无法面面俱到的提到，所以请你们记住的是这里提到的内容只是简化的版本，真是情况下是会更加复杂的。
+好了，了解了上面的内容，对于理解后续的章节是有帮助的。</p>
+
+<h3>Code Generation</h3>
+
+<p>实现 JavaScript 的所有功能是非常困难的，所以我们就简化一下我们的工作，只实现一个『计算器』的功能（当然后面你就会发现其实实现一个计算器也是很有趣的一件事情）。</p>
+
+<p>进入正题。实现的时候最简单的方式就是通过深度优先搜索算法的方式遍历抽象语法树（AST），然后为每个节点生成对应的机器码。你可能会有个疑问，应该如何去生成机器码呢，前面没提到呀。不要着急，我给你推荐一个工具 jit.js。</p>
+
+<p>jit.js 是 Node.js  的一个模块（实际上是 C++ 的扩展），主要的目的就是用来生成并执行机器码的，用法跟汇编语言一样，只是语法是 JavaScript 的语法。例如：</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">jit</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;jit.js&#39;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">fn</span> <span class="o">=</span> <span class="nx">jit</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Proc</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">mov</span><span class="p">(</span><span class="s1">&#39;rax&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Return</span><span class="p">();</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fn</span><span class="p">());</span>  <span class="c1">// 42</span>
+</code></pre></div>
+<h3>Let&#39;s write it</h3>
+
+<p>现在唯一剩下的一件事情就是遍历 esprima 生成的抽象语法树（AST）了。考虑到 esprima 输出的数据格式以及我们『计算器』的简单功能，遍历抽象语法树应该是一个很简单的事情。
+我们打算支持：</p>
+
+<ol>
+<li>数值字面量</li>
+<li>二元表达式，其中的操作符是 +,  -,  *,  /, %</li>
+<li>一元表达式，其中的操作符是 -</li>
+</ol>
+
+<p>上面的操作符都是针对整数的，所以不要期望可以支持浮点数。</p>
+
+<p>当处理表达式的时候，我们会遍历它对应的抽象语法树节点，生成对应的机器码以便把结果保存在 rax 寄存器中。听起来很简单，但是有个地方需要注意的是，当我们用完 rax 寄存器之后还需要把它的内容恢复到原来的样子。也就是在用之前我们需要保存所有寄存器的状态，用完之后还要恢复到原来的状态。幸运的是 CPU 提供了 push 和 pop 这两个指令可以帮助我们很好的完成这个事情。</p>
+
+<p>下面就是整个『计算器』的代码，包含了一些注释，方便你们理解：</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">jit</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;jit.js&#39;</span><span class="p">),</span>
+    <span class="nx">esprima</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;esprima&#39;</span><span class="p">),</span>
+    <span class="nx">assert</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;assert&#39;</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">ast</span> <span class="o">=</span> <span class="nx">esprima</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+
+<span class="c1">// 编译汇编代码，生成最终机器码</span>
+<span class="kd">var</span> <span class="nx">fn</span> <span class="o">=</span> <span class="nx">jit</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// This will generate default entry boilerplate</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">Proc</span><span class="p">(</span><span class="nx">functon</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">visit</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">);</span>
+
+    <span class="c1">// 结果应该已经存储到了 rax 寄存器里面，所以返回即可</span>
+
+    <span class="c1">// This will generate default exit boilerplate</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">Return</span><span class="p">();</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="c1">// 执行机器码</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fn</span><span class="p">());</span>
+
+<span class="kd">function</span> <span class="nx">visit</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;Program&#39;</span><span class="p">)</span>
+    <span class="nx">visitProgram</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">);</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;Literal&#39;</span><span class="p">)</span>
+    <span class="nx">visitLiteral</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">);</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;UnaryExpression&#39;</span><span class="p">)</span>
+    <span class="nx">visitUnary</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">);</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">type</span> <span class="o">===</span> <span class="s1">&#39;BinaryExpression&#39;</span><span class="p">)</span>
+    <span class="nx">visitBinary</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">);</span>
+  <span class="k">else</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Unknown ast node: &#39;</span> <span class="o">+</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">type</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">visitProgram</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+               <span class="mi">1</span><span class="p">,</span>
+               <span class="s1">&#39;Only one statement programs are supported&#39;</span><span class="p">);</span>
+  <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">body</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">type</span><span class="p">,</span> <span class="s1">&#39;ExpressionStatement&#39;</span><span class="p">);</span>
+  <span class="nx">visit</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">body</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">expression</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">visitLiteral</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span><span class="p">);</span>
+  <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">value</span> <span class="o">|</span> <span class="mi">0</span><span class="p">,</span>
+               <span class="nx">ast</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+               <span class="s1">&#39;Only integer numbers are supported&#39;</span><span class="p">);</span>
+
+  <span class="k">this</span><span class="p">.</span><span class="nx">mov</span><span class="p">(</span><span class="s1">&#39;rax&#39;</span><span class="p">,</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">visitBinary</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 保存 rbx 寄存器的状态</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+
+  <span class="c1">// 访问表达式的右子节点</span>
+  <span class="nx">visit</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">right</span><span class="p">);</span>
+
+  <span class="c1">// 把 rax 寄存器的内容放到 rbx 寄存器</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">mov</span><span class="p">(</span><span class="s1">&#39;rbx&#39;</span><span class="p">,</span> <span class="s1">&#39;rax&#39;</span><span class="p">);</span>
+
+  <span class="c1">// 访问表达式的左子节点，结果会存到在 rax 寄存器中</span>
+  <span class="nx">visit</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">left</span><span class="p">);</span>
+
+  <span class="c1">// 到了这里，左子节点的值在 rax 寄存器，右子节点的值在 rbx 寄存器</span>
+  <span class="c1">// 执行二元操作</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span> <span class="o">===</span> <span class="s1">&#39;+&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;rax&#39;</span><span class="p">,</span> <span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span> <span class="o">===</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">sub</span><span class="p">(</span><span class="s1">&#39;rax&#39;</span><span class="p">,</span> <span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span> <span class="o">===</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 乘法，只需要一个寄存器操作符即可</span>
+    <span class="c1">// rax = rax * rbx</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span> <span class="o">===</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 保留 rdx 寄存器的状态</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+
+    <span class="c1">// idiv is diving rdx:rax by rbx, therefore we need to clear rdx</span>
+    <span class="c1">// before running it</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xor</span><span class="p">(</span><span class="s1">&#39;rdx&#39;</span><span class="p">,</span> <span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+
+    <span class="c1">// Signed division, rax = rax / rbx</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">idiv</span><span class="p">(</span><span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+
+    <span class="c1">// 恢复 rdx 寄存器的状态</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">pop</span><span class="p">(</span><span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span> <span class="o">===</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 保存 rdx 寄存器的状态</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+
+    <span class="c1">// Prepare to execute idiv</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">xor</span><span class="p">(</span><span class="s1">&#39;rdx&#39;</span><span class="p">,</span> <span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">idiv</span><span class="p">(</span><span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+
+    <span class="c1">// imul puts remainedr in &#39;rdx&#39;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">mov</span><span class="p">(</span><span class="s1">&#39;rax&#39;</span><span class="p">,</span> <span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+
+    <span class="c1">// 恢复 rdx 寄存器的状态</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">pop</span><span class="p">(</span><span class="s1">&#39;rdx&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Unsupported binary operator: &#39;</span> <span class="o">+</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// 恢复 rbx 寄存器</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">pop</span><span class="p">(</span><span class="s1">&#39;rbx&#39;</span><span class="p">);</span>
+
+  <span class="c1">// 结果已经在 rax 寄存器中了</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">visitUnary</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 访问节点的参数，然后把结果放到 rax 寄存器中</span>
+  <span class="nx">visit</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">argument</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span> <span class="o">===</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 负值</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">neg</span><span class="p">(</span><span class="s1">&#39;rax&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Unsupported unary operator: &#39;</span> <span class="o">+</span> <span class="nx">ast</span><span class="p">.</span><span class="nx">operator</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>把上述代码保存为 main.js ，然后执行下面的命令就能看到输出的结果，是不是很有趣呢？</p>
+
+<p>能读到这里已经很不容易了，下面我再介绍一下浮点数的操作以及操作堆上分配的内存事宜。</p>
+
+    </div>
+</article>

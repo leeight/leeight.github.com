@@ -27,7 +27,7 @@ author: leeight
 
 ### NAN-Boxing
 
-据 <http://wingolog.org> 介绍，这个技术最早来源于LuaJIT，后来被Mozilla应用到了SpiderMonkey里面。Mozilla的一个工程师 Rob Sayre 曾经发表过[博客](http://blog.mozilla.com/rob-sayre/2010/08/02/mozillas-new-javascript-value-representation/)详细的介绍了这个技术，但是链接已经失效了，需要从<http://web.archive.org>上面重新找回才可以。
+据 <http://wingolog.org> 介绍，这个技术最早来源于 LuaJIT，后来被 Mozilla 应用到了 SpiderMonkey 里面。Mozilla 的一个工程师 Rob Sayre 曾经发表过[博客](http://blog.mozilla.com/rob-sayre/2010/08/02/mozillas-new-javascript-value-representation/)详细的介绍了这个技术，但是链接已经失效了，需要从<http://web.archive.org>上面重新找回才可以。
 
 实际上这个技术也是相当的古老了，据说 1993 年就已经有人介绍过了：<http://lambda-the-ultimate.org/node/3912>
 

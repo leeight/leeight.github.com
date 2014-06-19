@@ -39,13 +39,11 @@ author: leeight
 
 按照[IEEE-754 double precision numbers](http://en.wikipedia.org/wiki/IEEE_754-1985#Double-precision_64_bit)的规定：
 
-![single precision numbers](http://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/IEEE_754_Single_Floating_Point_Format.svg/618px-IEEE_754_Single_Floating_Point_Format.svg.png)
-
 ![double precision numbers](http://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/IEEE_754_Double_Floating_Point_Format.svg/618px-IEEE_754_Double_Floating_Point_Format.svg.png)
 
 `NaN`指的就是：
 
 1. 11 个指数位全部是 1
-2. 剩余的 23 个或者 52 个尾数位不是 0
+2. 剩余的 52 个尾数位不是 0
 
 这样子的话我们拿掉1个符号位，11 个指数位，4 个尾数位，总共 16 个比特；还剩余 48 个比特，已经可以表示足够多的类型了。因为在 64 位系统上，因为对齐内存地址的缘故，剩余的 48 个比特最低 3 位总是 0，这就可以表示 8 种类型了。如果还不够的话，从 4 个尾数位中去掉三个，还能表示 8 种，所以我们有64种类型可以用来表示。

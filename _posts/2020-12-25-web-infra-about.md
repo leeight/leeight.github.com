@@ -2,6 +2,7 @@
 layout: post
 title: We are hiring (ByteDance Web Infra Team)
 author: leeight
+permalink: /bytedance/web-infra
 ---
 
 ## 团队简介

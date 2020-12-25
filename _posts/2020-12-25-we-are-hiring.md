@@ -10,7 +10,7 @@ author: leeight
 
 团队负责人是 LI YU BEI [Github](https://github.com/leeight) & [Zhihu](https://www.zhihu.com/people/li-yu-bei)，目前团队主要专注的方向包括 [下一代Web开发框架](https://zhuanlan.zhihu.com/p/88616149)、Serverless、跨端解决方案、终端基础体验、ToB 等等，已经在全国多个地方设立了研发团队，包括 北京、上海、杭州、广州、深圳等等，以及未来的新加坡海外研发团队也在筹备中。
 
-团队专栏：https://zhuanlan.zhihu.com/bytedancer
+团队专栏：<https://zhuanlan.zhihu.com/bytedancer>
 
 🔥️ 北京 & 上海 & 杭州团队和业务介绍：
 

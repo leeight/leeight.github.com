@@ -2,7 +2,7 @@
 # url: http://fex.baidu.com
 source:      .
 destination: ./_site
-# plugins:     ./_plugins
+plugins_dir:     ./_plugins
 lsi:      false
 safe:     false
 pygments: true

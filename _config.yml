@@ -2,11 +2,11 @@
 # url: http://fex.baidu.com
 source:      .
 destination: ./_site
-plugins:     ./_plugins
+# plugins:     ./_plugins
 lsi:      false
 safe:     false
 pygments: true
-markdown: redcarpet
+# markdown: redcarpet
 permalink: /blog/:year/:month/:title
 paginate: 12
 paginate_path: "articles/page:num"

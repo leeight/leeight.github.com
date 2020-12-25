@@ -9,7 +9,7 @@ author: leeight
 我们是字节跳动的 Web Infrastructure Team，作为公司的前端基础工程团队，我们的目标是提供优秀的技术解决方案，助力公司业务成长，同时打造开放的技术生态，推动公司和业界前端技术的发展。目前团队主要专注的方向包括 [现代 Web 开发解决方案、低代码搭建](https://zhuanlan.zhihu.com/p/88616149)、Serverless、跨端解决方案、终端基础体验、ToB 等等，已经在多个地方设立了研发团队，包括 北京、上海、杭州、广州、深圳、新加坡。
 
 团队专栏：<https://zhuanlan.zhihu.com/bytedancer>  
-投递方式：leeight@bytedance.com  
+投递方式：webinfra@bytedance.com  
 邮件标题：应聘+城市+岗位名称（例如：应聘深圳前端团队负责人）
 
 🔥️ 北京 & 上海 & 杭州团队和业务介绍：

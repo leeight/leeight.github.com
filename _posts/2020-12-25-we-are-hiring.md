@@ -8,7 +8,7 @@ author: leeight
 
 我们是字节跳动的 Web Infrastructure Team，作为公司的前端基础工程团队，我们的目标是提供优秀的技术解决方案，助力公司业务成长，同时打造开放的技术生态，推动公司和业界前端技术的发展。
 
-团队负责人是 LI YU BEI，他的 [Github](https://github.com/leeight) 和 [Zhihu](https://www.zhihu.com/people/li-yu-bei)。目前团队主要专注的方向包括 [下一代Web开发框架](https://zhuanlan.zhihu.com/p/88616149)、Serverless、跨端解决方案、终端基础体验、ToB 等等，已经在全国多个地方设立了研发团队，包括 北京、上海、杭州、广州、深圳等等，以及未来的新加坡海外研发团队也在筹备中。
+团队负责人是 LI YU BEI，他的 [Github](https://github.com/leeight) 和 [Zhihu](https://www.zhihu.com/people/li-yu-bei)。目前团队主要专注的方向包括 [现代 Web 开发解决方案、低代码搭建](https://zhuanlan.zhihu.com/p/88616149)、Serverless、跨端解决方案、终端基础体验、ToB 等等，已经在全国多个地方设立了研发团队，包括 北京、上海、杭州、广州、深圳等等，以及未来的新加坡海外研发团队也在筹备中。
 
 团队专栏：<https://zhuanlan.zhihu.com/bytedancer>  
 投递方式：leeight@bytedance.com  
@@ -17,7 +17,7 @@ author: leeight
 🔥️ 北京 & 上海 & 杭州团队和业务介绍：
 
 * Web开发引擎：它从最顶层解决方案的角度，基于 Web 技术，为应用软件从无到有、持续改进和交付的全流程，提供针对各个分工和场景的工具套件，实现以真实代码和最终产品为中心的、次世代的分工协作模式和工作模式，追求 DX（开发者体验）和 UX（用户体验）的最大化，降低打造优秀软件的门槛，帮助用户更好的解决问题、满足需求和创新迭代，让有限的专业开发者能支撑比当前高几个数量级的应用开发需求。
-* 跨端解决方案：它是一套用于构建用户界面的跨端框架。其与大型框架不同的是，它只关注视图层，不仅易于上手，还便于第三方库或既有项目整合，另一方面当与现代化的工具链以及各种支持类库结合使用时，它也完全能够为复杂的应用提供驱动。
+* 跨端解决方案：它是一套用于构建用户界面的跨端框架，只关注视图层，不仅易于上手，还便于第三方库或既有项目整合，另一方面当与现代化的工具链以及各种支持类库结合使用时，它也完全能够为复杂的应用提供驱动。
 * Serverless: 它给字节前端团队提供了统一的 Serverless 部署架构，可以便捷地实现普通页面部署、微前端应用部署、SSR 部署以及 BFF 部署。
 * Node.js Infrastructure: We focus on building the stable and reliable Node.js ecosystem in ByteDance.
 

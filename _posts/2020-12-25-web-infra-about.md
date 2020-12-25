@@ -1,15 +1,13 @@
 ---
 layout: post
-title: We are hiring (ByteDance Web Infra Team)
+title: ByteDance Web Infra Team is hiring
 author: leeight
 permalink: /bytedance/web-infra
 ---
 
 ## 团队简介
 
-我们是字节跳动的 Web Infrastructure Team，作为公司的前端基础工程团队，我们的目标是提供优秀的技术解决方案，助力公司业务成长，同时打造开放的技术生态，推动公司和业界前端技术的发展。
-
-团队负责人是 LI YU BEI，他的 [Github](https://github.com/leeight) 和 [Zhihu](https://www.zhihu.com/people/li-yu-bei)。目前团队主要专注的方向包括 [现代 Web 开发解决方案、低代码搭建](https://zhuanlan.zhihu.com/p/88616149)、Serverless、跨端解决方案、终端基础体验、ToB 等等，已经在全国多个地方设立了研发团队，包括 北京、上海、杭州、广州、深圳等等，以及未来的新加坡海外研发团队也在筹备中。
+我们是字节跳动的 Web Infrastructure Team，作为公司的前端基础工程团队，我们的目标是提供优秀的技术解决方案，助力公司业务成长，同时打造开放的技术生态，推动公司和业界前端技术的发展。目前团队主要专注的方向包括 [现代 Web 开发解决方案、低代码搭建](https://zhuanlan.zhihu.com/p/88616149)、Serverless、跨端解决方案、终端基础体验、ToB 等等，已经在全国多个地方设立了研发团队，包括 北京、上海、杭州、广州、深圳等等，以及未来的新加坡海外研发团队也在筹备中。
 
 团队专栏：<https://zhuanlan.zhihu.com/bytedancer>  
 投递方式：leeight@bytedance.com  
@@ -38,6 +36,7 @@ permalink: /bytedance/web-infra
 
 🔥️ 部分团队成员：
 
+* <https://github.com/leeight> (Team Leader)
 * <https://github.com/dexteryy> (JS Hacker, SF/F Nerd)
 * <https://github.com/antfu> (Vue.js Core Contributor)
 * <https://github.com/Amour1688> (Vue.js Contributor)

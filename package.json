@@ -1,0 +1,14 @@
+{
+  "name": "leeight.github.com",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:leeight/leeight.github.com.git",
+  "author": "leeight <leeight@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "minify:css": "sh -x gen_css.sh"
+  },
+  "devDependencies": {
+    "less": "^4.0.0"
+  }
+}

@@ -45,6 +45,7 @@ permalink: /bytedance/web-infra
 * <https://github.com/antfu> (Vue.js Core Contributor)
 * <https://github.com/Amour1688> (Vue.js Contributor)
 * <https://github.com/oyyd> (Node.js Core Contributor)
+* <https://github.com/losfair> (WebAssembly)
 * ....
 
 ## 前端团队负责人 / Frontend Tech Lead

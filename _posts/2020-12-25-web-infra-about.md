@@ -43,6 +43,7 @@ permalink: /bytedance/web-infra
 * <https://github.com/leeight> (Team Leader)
 * <https://github.com/dexteryy> (JS Hacker, SF/F Nerd)
 * <https://github.com/antfu> (Vue.js Core Contributor)
+* <https://github.com/underfin> (Vue.js Core Contributor)
 * <https://github.com/Amour1688> (Vue.js Contributor)
 * <https://github.com/oyyd> (Node.js Core Contributor)
 * <https://github.com/losfair> (WebAssembly)

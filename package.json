@@ -6,6 +6,7 @@
   "author": "leeight <leeight@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "~/.gem/ruby/2.6.0/bin/jekyll s",
     "minify:css": "sh -x gen_css.sh"
   },
   "devDependencies": {

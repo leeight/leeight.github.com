@@ -47,6 +47,8 @@ permalink: /bytedance/web-infra
 * <https://github.com/oyyd> (Node.js Core Contributor)
 * <https://github.com/leizongmin> (Node.js Advocate)
 * <https://github.com/losfair> (WebAssembly)
+* <https://github.com/Brooooooklyn> (Rust & https://napi.rs/)
+* <https://github.com/amio>
 * ....
 
 ## 前端团队负责人 / Frontend Tech Lead

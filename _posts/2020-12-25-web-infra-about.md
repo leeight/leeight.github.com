@@ -49,6 +49,7 @@ permalink: /bytedance/web-infra
 * <https://github.com/losfair> (WebAssembly)
 * <https://github.com/Brooooooklyn> (Rust & https://napi.rs/)
 * <https://github.com/amio>
+* <https://github.com/niudai> & <https://www.zhihu.com/people/niu-dai-68-44>
 * ....
 
 ## 前端团队负责人 / Frontend Tech Lead

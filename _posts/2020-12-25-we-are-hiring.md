@@ -44,11 +44,13 @@ author: leeight
 * <https://github.com/underfin> (Vue.js Core Contributor)
 * <https://github.com/Amour1688> (Vue.js Contributor)
 * <https://github.com/oyyd> (Node.js Core Contributor)
+* <https://github.com/theanarkh> (Node.js Advocate)
 * <https://github.com/leizongmin> (Node.js Advocate)
 * <https://github.com/losfair> (WebAssembly)
 * <https://github.com/Brooooooklyn> (Rust & https://napi.rs/)
 * <https://github.com/amio>
 * <https://github.com/niudai> & <https://www.zhihu.com/people/niu-dai-68-44>
+* <https://github.com/protoman92>
 * ....
 
 ## 前端团队负责人 / Frontend Tech Lead
